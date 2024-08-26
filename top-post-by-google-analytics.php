@@ -2,12 +2,14 @@
 /**
  * Plugin Name: Top Post by Google Analytics
  * Plugin URI: https://diditho.com
- * Description: A plugin to display top posts in a widget using Google Analytics data.
+ * Description: A plugin to display top posts in a widget using Google Analytics data via Site Kit by Google.
  * Version: 1.0.0
  * Author: Banuardi Nugroho
  * Author URI: https://diditho.com
  * Text Domain: top-post-by-google-analytics
  * Domain Path: /languages
+ * Requires at least: 5.6
+ * Requires PHP: 7.0 or higher
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

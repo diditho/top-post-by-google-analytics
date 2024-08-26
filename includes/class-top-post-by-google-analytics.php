@@ -2,66 +2,49 @@
 
 class Top_Post_By_Google_Analytics {
 
-    /**
-     * The loader that's responsible for maintaining and registering all hooks.
-     *
-     * @since    1.0.0
-     * @access   protected
-     * @var      mixed    $loader
-     */
-    protected $loader;
-
-    /**
-     * Constructor function for the plugin.
-     *
-     * @since    1.0.0
-     */
     public function __construct() {
-        $this->load_dependencies();
-        $this->define_admin_hooks();
-        $this->define_widget_hooks();
+        add_action( 'admin_notices', array( $this, 'check_site_kit_installation' ) );
+        add_action( 'admin_init', array( $this, 'check_google_analytics_setup' ) );
+        add_action( 'widgets_init', array( $this, 'register_widget' ) );
     }
 
-    /**
-     * Load the required dependencies for this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function load_dependencies() {
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-top-post-by-google-analytics-widget.php';
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-top-post-by-google-analytics-auth.php';
-    }
-
-    /**
-     * Register all of the hooks related to the admin area functionality.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_admin_hooks() {
-        $plugin_admin = new Top_Post_By_Google_Analytics_Auth();
-        add_action( 'admin_menu', array( $plugin_admin, 'add_plugin_admin_menu' ) );
-        add_action( 'admin_init', array( $plugin_admin, 'register_settings' ) );
-    }
-
-    /**
-     * Register all of the hooks related to the widget functionality.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_widget_hooks() {
-        $plugin_widget = new Top_Post_By_Google_Analytics_Widget();
-        add_action( 'widgets_init', array( $plugin_widget, 'register_widget' ) );
-    }
-
-    /**
-     * Run the plugin.
-     *
-     * @since    1.0.0
-     */
     public function run() {
         // Add any additional initialization here.
+    }
+
+    /**
+     * Check if Site Kit by Google is installed and activated.
+     */
+    public function check_site_kit_installation() {
+        if ( ! is_plugin_active( 'google-site-kit/google-site-kit.php' ) ) {
+            echo '<div class="notice notice-error"><p>';
+            echo __( 'The "Top Post by Google Analytics" plugin requires the "Site Kit by Google" plugin. Please install and activate it.', 'top-post-by-google-analytics' );
+            echo '</p></div>';
+        }
+    }
+
+    /**
+     * Check if Google Analytics is set up in Site Kit.
+     */
+    public function check_google_analytics_setup() {
+        if ( is_plugin_active( 'google-site-kit/google-site-kit.php' ) ) {
+            $analytics_active = get_option( 'googlesitekit_analytics_settings' );
+            if ( empty( $analytics_active ) || empty( $analytics_active['propertyID'] ) ) {
+                add_action( 'admin_notices', function() {
+                    echo '<div class="notice notice-error"><p>';
+                    echo __( 'Please complete the Google Analytics setup in the Site Kit by Google plugin.', 'top-post-by-google-analytics' );
+                    echo '</p></div>';
+                });
+            }
+        }
+    }
+
+    /**
+     * Register the widget with WordPress.
+     */
+    public function register_widget() {
+        if ( is_plugin_active( 'google-site-kit/google-site-kit.php' ) ) {
+            register_widget( 'Top_Post_By_Google_Analytics_Widget' );
+        }
     }
 }
