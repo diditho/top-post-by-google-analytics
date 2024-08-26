@@ -2,6 +2,7 @@
 WordPress Plugin Top Post By Google Analytics
 
 #structure
+
 top-post-by-google-analytics/
 ├── includes/
 │   ├── class-top-post-by-google-analytics.php
