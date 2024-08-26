@@ -3,6 +3,9 @@
 class Top_Post_By_Google_Analytics {
 
     public function __construct() {
+        // Include the widget class file
+        require_once plugin_dir_path( __FILE__ ) . 'class-top-post-by-google-analytics-widget.php';
+
         add_action( 'admin_notices', array( $this, 'check_site_kit_installation' ) );
         add_action( 'admin_init', array( $this, 'check_google_analytics_setup' ) );
         add_action( 'widgets_init', array( $this, 'register_widget' ) );
